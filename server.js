@@ -21,6 +21,6 @@ app.get('/weather', (req, res) => {
   res.send(weatherForecast);
 });
 
-const port = process.env.CLIENT_PORT || 3666;
+const port = process.env.PORT || 3666;
 
 app.listen(port)

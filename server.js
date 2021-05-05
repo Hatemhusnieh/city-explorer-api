@@ -4,10 +4,10 @@ require('dotenv').config()
 const app = express();
 app.use(cors());
 const jsonData = require('./data/weather.json');
-
-app.get('/', function (req, res) {
-  res.send('hello from Hatem <3');
-});
+const superagent = require('superagent');
+// this is needed. 
+const WEATHER_BIT_KEY = process.env.WEATHER_BIT_KEY;
+//
 
 class Forecast {
   constructor(data) {
@@ -16,11 +16,19 @@ class Forecast {
   }
 }
 
-app.get('/weather', (req, res) => {
-  const weatherForecast = jsonData.data.map(elm => {return new Forecast(elm)});
-  res.send(weatherForecast);
+app.get('/', function (req, res) {
+  res.send('hello from Hatem <3');
 });
 
-const port = process.env.CLIENT_PORT || 3666;
 
+app.get('/weather', (req, res) => {
+  const weatherForecast = superagent(`https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_BIT_KEY}&lat=38.123&lon=-78.543`);
+  // console.log(weatherForecast);
+  superagent.get(weatherForecast).then(data => {
+    res.send(data.body);
+  }).catch(console.error);
+});
+
+
+const port = process.env.PORT || 3666;
 app.listen(port)

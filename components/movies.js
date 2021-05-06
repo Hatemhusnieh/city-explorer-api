@@ -18,7 +18,8 @@ class Movie {
     this.title = data.original_title;
     this.overview = data.overview;
     this.poster = 'http://image.tmdb.org/t/p/w342' + data.poster_path;
-    this.rating = data.vote_average
+    this.rating = data.vote_average;
+    this.releaseDate = data.release_date;
   }
 }
 

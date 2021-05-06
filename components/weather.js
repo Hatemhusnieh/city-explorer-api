@@ -20,6 +20,8 @@ class Forecast {
   constructor(data) {
     this.date = data.valid_date;
     this.description = data.weather.description;
+    this.high = data.app_max_temp;
+    this.low = data.app_min_temp;
   }
 }
 

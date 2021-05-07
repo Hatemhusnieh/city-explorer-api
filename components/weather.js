@@ -1,15 +1,33 @@
+'use strict';
+
 const superagent = require('superagent');
 require('dotenv').config();
 const jsonData = require('../data/weather.json');
 const WEATHER_BIT_KEY = process.env.WEATHER_BIT_KEY;
-
+// cache memory
+const cache = require('../data/weatherCache');
 
 
 const getWeatherData = (req, res) => {
-  const forecastUrl = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_BIT_KEY}&lat=${req.query.lat}&lon=${req.query.lon}`;
-  superagent.get(forecastUrl).then(weatherRes => {
-    const forecast = weatherRes.body.data.map(data => new Forecast(data));
-    res.send(forecast)
+  const forecastUrl = `https://api.weatherbit.io/v2.0/forecast/daily`;
+  const lat = req.query.lat;
+  const lon = req.query.lon;
+  const params = {
+    key: WEATHER_BIT_KEY,
+    lat: lat,
+    lon: lon
+  };
+  superagent.get(forecastUrl).query(params).then(weatherRes => {
+    // console.log(req.query);
+    if(cache[[lat,lon]]){
+      // console.log('getting weather from the cache');
+      response.status(200).send(cache[lat,lon])
+    }else{
+      // console.log('getting weather from the API');
+      const forecast = weatherRes.body.data.map(data => new Forecast(data));
+      cache[[lat,lon]] = forecast;
+      res.send(forecast)
+    }
   }).catch(error => {
     const forecast = jsonData.data.map(data => new Forecast(data));
     res.send(forecast)

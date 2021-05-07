@@ -1,14 +1,29 @@
+'use strict';
+
 const superagent = require('superagent');
 require('dotenv').config();
 const MOVIE_DB_KEY = process.env.MOVIE_DB_KEY;
-
+// cache memory
+const cache = require('../data/moviesCache');
 
 
 const getMoviesData = (req, res) => {
-  const movieUrl = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_DB_KEY}&query=${req.query.query}`;
-  superagent.get(movieUrl).then(movieRes => {
-    const moviesList = movieRes.body.results.map(data => new Movie(data));
-    res.send(moviesList)
+  const movieUrl = `https://api.themoviedb.org/3/search/movie`;
+  const country = req.query.query;
+  const params = {
+    api_key: MOVIE_DB_KEY,
+    query: country
+  };
+  superagent.get(movieUrl).query(params).then(movieRes => {
+    if(cache[country]){
+      // console.log('getting movies from the cache');
+      res.status(200).send(cache[country]);
+    }else{
+      // console.log('getting movies from the API');
+      const moviesList = movieRes.body.results.map(data => new Movie(data));
+      cache[country] = moviesList;
+      res.send(moviesList);
+    }
   }).catch(error => { console.error });
 };
 

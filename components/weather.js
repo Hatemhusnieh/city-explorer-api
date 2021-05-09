@@ -17,25 +17,34 @@ const getWeatherData = (req, res) => {
     lat: lat,
     lon: lon
   };
-  superagent.get(forecastUrl).query(params).then(weatherRes => {
-    // console.log(req.query);
+  // console.log(cache);
     if(cache[[lat,lon]]){
       // console.log('getting weather from the cache');
-      response.status(200).send(cache[lat,lon])
+      res.status(200).send(cache[[lat,lon]])
     }else{
+      superagent.get(forecastUrl).query(params).then(weatherRes => {
       // console.log('getting weather from the API');
       const forecast = weatherRes.body.data.map(data => new Forecast(data));
       cache[[lat,lon]] = forecast;
       res.send(forecast)
-    }
   }).catch(error => {
     const forecast = jsonData.data.map(data => new Forecast(data));
     res.send(forecast)
   });
+}
 };
 
 class Forecast {
   constructor(data) {
+    this.date = data.valid_date;
+    this.description = data.weather.description;
+    this.high = data.app_max_temp;
+    this.low = data.app_min_temp;
+  }
+}
+
+class PreForecast {
+  constructor(data){
     this.date = data.valid_date;
     this.description = data.weather.description;
     this.high = data.app_max_temp;

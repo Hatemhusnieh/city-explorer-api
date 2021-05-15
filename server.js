@@ -6,7 +6,7 @@ app.use(cors());
 // Function
 const getWeatherData = require('./components/weather');
 const getMoviesData = require('./components/movies');
-// const getRestaurants = require('./components/restaurants');
+const getRestaurants = require('./components/restaurants');
 // port to up;oad on data
 const port = process.env.PORT || 3666;
 
@@ -18,7 +18,7 @@ app.get('/', function (req, res) {
 
 app.get('/weather', getWeatherData);
 app.get('/movies', getMoviesData);
-// app.get('/restaurants', getRestaurants);
+app.get('/restaurants', getRestaurants);
 
 
 app.listen(port);

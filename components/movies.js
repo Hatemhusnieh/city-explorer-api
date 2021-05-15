@@ -14,7 +14,7 @@ const getMoviesData = (req, res) => {
     api_key: MOVIE_DB_KEY,
     query: country
   };
-  console.log(cache);
+  // console.log(cache);
   if(cache[country]){
     // console.log('getting movies from the cache');
     res.status(200).send(cache[country]);

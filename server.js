@@ -21,4 +21,6 @@ app.get('/movies', getMoviesData);
 app.get('/restaurants', getRestaurants);
 
 
-app.listen(port);
+app.listen(port,()=>{
+  console.log('Bruh!');
+});
